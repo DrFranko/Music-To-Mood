@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Music Recommender - Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Emotion Music Recommender - Results</h1>
+        <div class="result-container">
+            <p>Detected Emotion: <strong>{{ emotion }}</strong></p>
+            <p>Corresponding Mood: <strong>{{ mood }}</strong></p>
+            <h2>Recommended Songs:</h2>
+            <ul>
+                {% for song in recommendations %}
+                    <li>
+                        {{ song.song_name }}
+                        <a href="{{ url_for('play_song', uri=song.uri) }}">Play</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <a href="{{ url_for('index') }}">Take Another Photo</a>
+    </div>
+</body>
+</html>

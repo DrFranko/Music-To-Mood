@@ -1,0 +1,5 @@
+fer2013.csv
+genres_v2.csv
+.cache
+__pycache__
+emotion_recognition_model.pth
