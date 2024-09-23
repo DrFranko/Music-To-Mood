@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import cv2
 import numpy as np
 import torch
@@ -27,9 +27,9 @@ song_features_df = pd.read_csv("genres_v2.csv", low_memory=False)
 
 # Spotify setup
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-    client_id="420b73e02a0d4ec6aa5fec7ac8ae6b64",
-    client_secret="3522e9079ba9479da0b22ce748c61d22",
-    redirect_uri="http://127.0.0.1:8888/callback",
+    client_id=os.environ.get("SPOTIFY_CLIENT_ID"),
+    client_secret=os.environ.get("SPOTIFY_CLIENT_SECRET"),
+    redirect_uri="http://localhost:5000/callback",
     scope="user-read-playback-state user-modify-playback-state user-read-currently-playing"
 ))
 
@@ -73,9 +73,6 @@ def emotion_recog(image):
     
     return emotion_dict[maxindex]
 
-def get_random_songs(mood, n=5):
-    mood_songs = song_features_df[song_features_df['mood'] == mood]
-    return mood_songs[['song_name', 'uri']].sample(n).to_dict('records')
 
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
@@ -102,6 +99,11 @@ cluster_to_mood = {
     3: 'happy'    # High valence, high energy
 }
 song_features_df['mood'] = song_features_df['cluster'].map(cluster_to_mood)
+
+
+def get_random_songs(mood, n=5):
+    mood_songs = song_features_df[song_features_df['mood'] == mood]
+    return mood_songs[['song_name', 'uri']].sample(n).to_dict('records')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
