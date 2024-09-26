@@ -17,12 +17,10 @@ from model import EmotionRec
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # for flash messages
 
-# Load your emotion recognition model
 model = EmotionRec()
 model.load_state_dict(torch.load('emotion_recognition_model.pth'))
 model.eval()
 
-# Load your song dataset
 song_features_df = pd.read_csv("genres_v2.csv", low_memory=False)
 
 # Spotify setup
@@ -33,7 +31,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope="user-read-playback-state user-modify-playback-state user-read-currently-playing"
 ))
 
-# Other global variables and functions
 emotion_dict = {0: "Angry", 1: "Happy", 2: "Sad", 3: "Calm"}
 transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
@@ -66,7 +63,6 @@ def emotion_recog(image):
     pil_img = Image.fromarray(cropped_img)
     cropped_img = transform(pil_img).unsqueeze(0)
 
-    # Make prediction
     with torch.no_grad():
         prediction = model(cropped_img)
         maxindex = int(torch.argmax(prediction))
@@ -77,7 +73,6 @@ def emotion_recog(image):
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 
-# Select relevant features for PCA (you might adjust this based on your analysis)
 X = song_features_df[['valence', 'energy', 'danceability', 'loudness', 'acousticness']]
 
 # Apply PCA to reduce to 4 principal components
@@ -88,10 +83,8 @@ X_pca = pca.fit_transform(X)
 kmeans = KMeans(n_clusters=4, random_state=42)
 clusters = kmeans.fit_predict(X_pca)
 
-# Add clusters and mood mapping to the dataframe
 song_features_df['cluster'] = clusters
 
-# Map clusters to moods
 cluster_to_mood = {
     0: 'angry',   # Low valence, high energy
     1: 'sad',     # Very low valence, low energy
@@ -130,7 +123,6 @@ def index():
                 flash('No face detected in the image')
                 return redirect(request.url)
             
-            # Map emotion to mood
             mood_map = {"Angry": "angry", "Happy": "happy", "Sad": "sad", "Calm": "calm"}
             mood = mood_map.get(emotion, "happy")
             
