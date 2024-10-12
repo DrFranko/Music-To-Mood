@@ -16,13 +16,12 @@
             <ul>
                 {% for song in recommendations %}
                     <li>
-                        {{ song.song_name }}
-                        <a href="{{ url_for('play_song', uri=song.uri) }}">Play</a>
+                        {{ song.song_name }} - <a href="{{ song.audio_url }}" target="_blank">Play</a>
                     </li>
                 {% endfor %}
             </ul>
         </div>
-        <a href="{{ url_for('index') }}">Take Another Photo</a>
+        <a href="{{ url_for('index') }}">Analyze Another Image</a>
     </div>
 </body>
 </html>

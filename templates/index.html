@@ -20,7 +20,7 @@
         {% endwith %}
         <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="image">Take or upload a photo:</label>
+                <label for="image">Upload a photo:</label>
                 <input type="file" id="image" name="image" accept="image/*" capture="camera" required>
             </div>
             <button type="submit">Analyze Emotion</button>
