@@ -10,23 +10,18 @@ import io
 import os
 from model import EmotionRec
 
-# Configuration
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
-# Load model
 model = EmotionRec()
 model.load_state_dict(torch.load('emotion_recognition_model.pth', weights_only=True))  # Updated line
 model.eval()
 
-# Load song dataset
 song_features_df = pd.read_csv("genres_v2.csv", low_memory=False)
 
-# Jamendo API settings
 JAMENDO_CLIENT_ID = "bfa2f12a"  # Your Jamendo API Client ID
 JAMENDO_API_URL = "https://api.jamendo.com/v3.0/tracks/"
 
-# Emotion mapping
 emotion_dict = {0: "Angry", 1: "Happy", 2: "Sad", 3: "Calm"}
 transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),
@@ -35,7 +30,6 @@ transform = transforms.Compose([
     transforms.Normalize((0.5,), (0.5,))
 ])
 
-# PCA and KMeans for clustering
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 
@@ -46,7 +40,6 @@ kmeans = KMeans(n_clusters=4, random_state=42)
 clusters = kmeans.fit_predict(X_pca)
 song_features_df['cluster'] = clusters
 
-# Cluster to mood mapping
 cluster_to_mood = {
     0: 'angry',
     1: 'sad',
@@ -55,7 +48,6 @@ cluster_to_mood = {
 }
 song_features_df['mood'] = song_features_df['cluster'].map(cluster_to_mood)
 
-# Function for emotion recognition
 def emotion_recog(image):
     if len(image.shape) == 3 and image.shape[2] == 3:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -81,7 +73,6 @@ def emotion_recog(image):
     
     return emotion_dict[maxindex]
 
-# Function to get random songs from Jamendo
 def get_random_songs(mood, n=5):
     mood_to_tag = {
         'angry': 'rock',
@@ -111,7 +102,6 @@ def get_random_songs(mood, n=5):
         flash(f"API Error: {str(e)}")
         return []
 
-# Routes
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -129,7 +119,7 @@ def index():
             image = Image.open(io.BytesIO(image_data))
             image_np = np.array(image)
             
-            # Recognize emotion
+            
             emotion = emotion_recog(image_np)
             if emotion is None:
                 flash('No face detected in the image')
@@ -138,7 +128,7 @@ def index():
             mood_map = {"Angry": "angry", "Happy": "happy", "Sad": "sad", "Calm": "calm"}
             mood = mood_map.get(emotion, "happy")
 
-            # Get song recommendations
+            
             recommended_songs = get_random_songs(mood)
 
             return render_template('results.html', emotion=emotion, mood=mood, recommendations=recommended_songs)
