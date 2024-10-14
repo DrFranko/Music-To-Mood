@@ -14,12 +14,12 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 model = EmotionRec()
-model.load_state_dict(torch.load('emotion_recognition_model.pth', weights_only=True))  # Updated line
+model.load_state_dict(torch.load('emotion_recognition_model.pth', weights_only=True))  
 model.eval()
 
 song_features_df = pd.read_csv("genres_v2.csv", low_memory=False)
 
-JAMENDO_CLIENT_ID = "bfa2f12a"  # Your Jamendo API Client ID
+JAMENDO_CLIENT_ID = "bfa2f12a" 
 JAMENDO_API_URL = "https://api.jamendo.com/v3.0/tracks/"
 
 emotion_dict = {0: "Angry", 1: "Happy", 2: "Sad", 3: "Calm"}
