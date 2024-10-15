@@ -26,7 +26,7 @@ Pretrained emotion recognition model EmotionRec
 
 ## Installation
 ### Clone the repository:
-git clone https://github.com/your-username/emotion-music-recommendation.git
+git clone https://github.com/DrFranko/Music-To-Mood.git
 
 ### Navigate to the project directory:
 cd emotion-music-recommendation
