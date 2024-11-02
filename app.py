@@ -73,6 +73,7 @@ def emotion_recog(image):
     
     return emotion_dict[maxindex]
 
+
 def get_random_songs(mood, n=5):
     mood_to_tag = {
         'angry': 'rock',
@@ -101,6 +102,7 @@ def get_random_songs(mood, n=5):
     except Exception as e:
         flash(f"API Error: {str(e)}")
         return []
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -135,5 +137,6 @@ def index():
     
     return render_template('index.html')
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=4000, debug=True)

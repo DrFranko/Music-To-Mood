@@ -1,0 +1,9 @@
+torch
+Flask
+opencv-python-headless
+requests
+numpy
+pandas
+pillow
+torchvision
+scikit-learn
