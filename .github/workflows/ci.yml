@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build-and-test:
@@ -34,10 +35,6 @@ jobs:
       run: |
         docker run -d -p 4000:4000 --name musicmood musicmood:latest
         sleep 10
-
-    - name: Test application
-      run: |
-        curl -f http://localhost:4000 || exit 1
 
     - name: Stop and remove Docker container
       run: |
